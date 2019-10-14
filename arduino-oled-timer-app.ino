@@ -8,6 +8,9 @@
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 
+// define pins
+#define BUZZER 11
+
 // initialize encoder button and oled display =====================================================================================================================
 Button right = Button(8, PULLUP); // right button
 Button select = Button(9, PULLUP); // select button
@@ -506,6 +509,8 @@ void setup() {
   // intitalize display
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
   display.setTextColor(WHITE);
+  // set buzzer output
+  pinMode(BUZZER, OUTPUT);
 }
 
 // main loop ======================================================================================================================================================
@@ -565,17 +570,23 @@ void loop() {
         if (flash) {
           display.clearDisplay();
           display.display();
+          // buzzer on
+          digitalWrite(BUZZER, HIGH);
           flash = false;
         }
         else {
           display.clearDisplay();
           display.fillRect(0, 0, 128, 64, WHITE);
           display.display();
+          // buzzer off
+          digitalWrite(BUZZER, LOW);
           flash = true;
         }
         nextSwitchTime = millis() + 100;
       }
       if (select.uniquePress() || right.uniquePress() || left.uniquePress()) {
+        // buzzer off
+        digitalWrite(BUZZER, LOW);
         break;
       }
     }
